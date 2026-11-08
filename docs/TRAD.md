@@ -384,3 +384,4 @@ Layer 4: Cloudflare D1 Distributed SQLite Engine
 ### 10.3 Scaling Limits & Fail-Safe Behavior
 * **Request Scaling:** Automatically scales horizontally from 0 to 100,000 requests/day with no manual server provisioning.
 * **Fail-Safe Mode:** If an external target site hangs, blocks scrapers, or times out, the scraper aborts within 2.5s and immediately falls back to generating an internal SVG card, preventing thread blocking or cascade timeouts.
+

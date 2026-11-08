@@ -227,3 +227,4 @@ npx wrangler d1 execute url_shortener_db --remote --file=backup.sql
 | **Data in Transit** | TLS 1.3 / HSTS | Edge TLS enforcement |
 | **Data at Rest** | AES-256 Encryption | Native Cloudflare D1 storage encryption |
 | **Disaster Recovery** | D1 Time Travel (30-day PITR) | Supported via `wrangler d1 time-travel` |
+

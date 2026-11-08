@@ -155,3 +155,4 @@ To keep V1 usable, lean, and immediately shippable, the following are explicitly
 * **Paid Monetization & Subscriptions:** No Stripe, payment rails, or feature tiers.
 * **Heavy Analytics Database:** No per-click database logging of IP, geolocation, or referrer headers (avoids exhausting the 100k writes/day database limit). Cloudflare Web Analytics can be toggled at the domain level for free aggregate statistics.
 * **Binary Media Hosting:** No binary image uploads; thumbnail previews must be external URLs or dynamically rendered inline SVGs.
+

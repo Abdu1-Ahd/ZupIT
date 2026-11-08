@@ -162,3 +162,4 @@ To use your own short domain (e.g. `sho.rt/abc` or free `name.is-a.dev/abc`):
 
 ## 📄 License
 MIT License. Free to use, fork, and self-host.
+
