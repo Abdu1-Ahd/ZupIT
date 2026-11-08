@@ -1,0 +1,23 @@
+{
+  "name": "edge-url-shortener",
+  "version": "1.0.0",
+  "description": "Zero-cost, low-latency URL shortener with rich social preview proxying on Cloudflare Workers",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 execute DB --local --file=./schema.sql",
+    "db:migrate:remote": "wrangler d1 execute DB --remote --file=./schema.sql",
+    "build": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "hono": "^4.7.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261104.1",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.7",
+    "wrangler": "^4.158.0"
+  }
+}
