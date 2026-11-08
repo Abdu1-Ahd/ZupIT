@@ -46,9 +46,13 @@ describe("End-to-End Application Integration", () => {
     ENVIRONMENT: "test"
   };
 
-  it("GET / serves the Web UI dashboard", async () => {
+  it("GET / serves the Web UI dashboard with security headers", async () => {
     const res = await app.request("http://localhost/", {}, env);
     expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Security-Policy")).toContain("default-src 'none'");
+    expect(res.headers.get("X-Frame-Options")).toBe("DENY");
+    expect(res.headers.get("X-Content-Type-Options")).toBe("nosniff");
+    expect(res.headers.get("Referrer-Policy")).toBe("strict-origin-when-cross-origin");
     const html = await res.text();
     expect(html).toContain("Fast, Zero-Cost URL Shortener");
     expect(html).toContain('id="shorten-form"');

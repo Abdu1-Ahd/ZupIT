@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { isSafePublicUrl } from "../src/ssrf";
 import { generateRandomSlug, validateCustomSlug } from "../src/slug";
 import { isCrawlerBot, renderCrawlerHtml, generateFallbackCardSvg } from "../src/bot";
+import { renderIcon, renderWebUi, OLD_MONEY_PALETTE, oldMoneyTheme, themeToCssVariables } from "../src/ui";
 
 describe("SSRF Protection (isSafePublicUrl)", () => {
   it("allows standard public HTTPS and HTTP URLs", () => {
@@ -111,5 +112,69 @@ describe("Visual Card Previews & Fallback", () => {
     expect(html).not.toContain("<script>alert(1)</script>");
     expect(html).toContain("&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;");
     expect(html).toContain('<meta http-equiv="refresh" content="0; url=https://example.com">');
+  });
+});
+
+describe("Modular Web UI & Icon System", () => {
+  it("renders SVG icons with configurable size and classes", () => {
+    const iconSvg = renderIcon("link", { size: 24, className: "custom-class" });
+    expect(iconSvg).toContain('width="24"');
+    expect(iconSvg).toContain('class="custom-class"');
+    expect(iconSvg).toContain("<svg");
+  });
+
+  it("assembles complete secure UI document with styles and components", () => {
+    const html = renderWebUi();
+    expect(html).toContain("<!DOCTYPE html>");
+    expect(html).toContain("Fast, Zero-Cost URL Shortener");
+    expect(html).toContain('id="shorten-form"');
+    expect(html).toContain('id="url-input"');
+    expect(html).toContain('id="btn-submit"');
+    expect(html).toContain('id="result-box"');
+    expect(html).toContain("novalidate");
+    expect(html).toContain("toast-banner");
+    expect(html).toContain("copy-toast");
+    expect(html).toContain("smooth-accordion");
+    expect(html).toContain('id="btn-paste"');
+    expect(html).toContain('id="btn-qr"');
+    expect(html).toContain('id="history-card"');
+    expect(html).toContain("platform-tabs");
+    expect(html).toContain(".sr-only");
+    expect(html).toContain("⌘K");
+    expect(html).not.toContain('id="adv-accordion"');
+    expect(html).not.toContain('id="slug-input"');
+    expect(html).not.toContain("Developer API");
+  });
+
+  it("generates valid zero-dependency SVG QR codes", async () => {
+    const { generateQrSvg } = await import("../src/ui/qr");
+    const svg = generateQrSvg("https://zupit.pages.dev/xyz123");
+    expect(svg).toContain("<svg");
+    expect(svg).toContain("<path");
+    expect(svg).toContain("xmlns=");
+  });
+});
+
+describe("Centralized Design System Themes", () => {
+  it("exports exact Old Money palette tokens", () => {
+    expect(OLD_MONEY_PALETTE.obsidianBlack).toBe("#000000");
+    expect(OLD_MONEY_PALETTE.charcoalSlate).toBe("#5e5956");
+    expect(OLD_MONEY_PALETTE.stonePewter).toBe("#99948e");
+    expect(OLD_MONEY_PALETTE.oxbloodBurgundy).toBe("#5f0e0d");
+    expect(OLD_MONEY_PALETTE.alabasterCream).toBe("#f3efe6");
+    expect(OLD_MONEY_PALETTE.charcoalCanvas).toBe("#32312f");
+  });
+
+  it("generates CSS custom properties matching the active theme", () => {
+    const cssVars = themeToCssVariables(oldMoneyTheme);
+    expect(cssVars).toContain("--primary: #5f0e0d");
+    expect(cssVars).toContain("--text: #f3efe6");
+    expect(cssVars).toContain("--border: rgba(153, 148, 142, 0.16)");
+  });
+
+  it("injects theme custom properties into the rendered HTML", () => {
+    const html = renderWebUi();
+    expect(html).toContain("--primary: #5f0e0d");
+    expect(html).toContain("--text: #f3efe6");
   });
 });

@@ -25,11 +25,15 @@
 │   ├── scraper.ts      # Streaming HTMLRewriter OpenGraph metadata extraction
 │   ├── ssrf.ts         # Server-Side Request Forgery IP & protocol validator
 │   ├── slug.ts         # Cryptographic Base62 slug generation & vanity validation
-│   ├── ui.ts           # Embedded single-page application dashboard
+│   ├── ui/             # Modular Old Money design system & interactive client scripts
+│   ├── ui.ts           # Root UI export bridge
 │   └── types.ts        # TypeScript interfaces & Cloudflare D1 environment bindings
+├── functions/          # Cloudflare Pages edge proxy function ([[route]].ts)
+├── public/             # Static assets & edge headers (_headers)
 ├── test/
 │   ├── unit.test.ts        # Unit tests (SSRF, Slug, Bot detector, SVG card generator)
-│   └── integration.test.ts # End-to-end integration tests (Hono app request lifecycle)
+│   ├── integration.test.ts # In-memory integration tests (Hono app request lifecycle)
+│   └── e2e-live.test.ts    # Live edge deployment verification (Pages & Worker)
 ├── schema.sql          # D1 SQLite table creation & WITHOUT ROWID configuration
 ├── wrangler.jsonc      # Cloudflare Worker configuration & D1 database bindings
 └── PRD.md              # Formal Product Requirement Document
@@ -49,9 +53,13 @@ npm install
 ```
 
 ### 3. Run the Test Suite
-Runs all 22 unit and end-to-end integration tests:
+Runs hermetic unit and integration tests (28 tests):
 ```bash
 npm test
+```
+Or run live smoke tests against deployed Cloudflare infrastructure:
+```bash
+npm run test:e2e
 ```
 
 ### 4. Initialize Local D1 Database

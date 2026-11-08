@@ -21,8 +21,16 @@ app.get("/api/health", (c) => {
   });
 });
 
-// Serve Web UI
+// Serve Web UI with Strict Edge Security Headers
 app.get("/", (c) => {
+  c.header(
+    "Content-Security-Policy",
+    "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';"
+  );
+  c.header("X-Frame-Options", "DENY");
+  c.header("X-Content-Type-Options", "nosniff");
+  c.header("Referrer-Policy", "strict-origin-when-cross-origin");
+  c.header("Permissions-Policy", "interest-cohort=(), camera=(), microphone=(), geolocation=()");
   return c.html(renderWebUi());
 });
 
@@ -130,7 +138,9 @@ app.post("/api/shorten", async (c) => {
     .bind(slug, rawUrl, title, description, imageUrl, createdBy)
     .run();
 
-  const origin = new URL(c.req.url).origin;
+  const forwardedHost = c.req.header("x-forwarded-host");
+  const forwardedProto = c.req.header("x-forwarded-proto") || "https";
+  const origin = forwardedHost ? `${forwardedProto}://${forwardedHost}` : new URL(c.req.url).origin;
   const shortUrl = `${origin}/${slug}`;
 
   // Pre-warm Edge Cache for Social Bots
